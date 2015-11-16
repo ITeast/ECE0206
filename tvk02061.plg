@@ -1,0 +1,37 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: tvk02061 - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\Users\Vera\AppData\Local\Temp\RSPFAA2.tmp" with contents
+[
+/nologo /ML /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"Release/" /Fd"Release/" /FD /c 
+"E:\DEVICES\ECE0206-1\WIN_ALL\tvk02061win - Copy\library02061.cpp"
+]
+Creating command line "cl.exe @C:\Users\Vera\AppData\Local\Temp\RSPFAA2.tmp" 
+Creating temporary file "C:\Users\Vera\AppData\Local\Temp\RSPFAA3.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib setupapi.lib /nologo /subsystem:console /incremental:no /pdb:"Release/tvk02061.pdb" /machine:I386 /out:"Release/tvk02061.exe" 
+".\Release\library02061.obj"
+".\Release\OpenECE0206byIndex.obj"
+".\Release\OZUtest.obj"
+".\Release\SI_test.obj"
+".\Release\SO_test.obj"
+".\Release\tvk02061.obj"
+]
+Creating command line "link.exe @C:\Users\Vera\AppData\Local\Temp\RSPFAA3.tmp"
+<h3>Output Window</h3>
+Compiling...
+library02061.cpp
+Linking...
+
+
+
+<h3>Results</h3>
+tvk02061.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

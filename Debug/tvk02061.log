@@ -1,0 +1,29 @@
+﻿Построение начато 15.11.2015 20:39:05.
+     1>Проект "C:\Users\Администратор\Desktop\tvk02061win2\tvk02061.vcxproj" в узле 2 (целевые объекты build).
+     1>InitializeBuildStatus:
+         Создание ".\Debug\tvk02061.unsuccessfulbuild", так как было задано "AlwaysCreate".
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _VC80_UPGRADE=0x0600 /D _MBCS /Gm /EHsc /RTC1 /MTd /GS /Gy- /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Debug\\" /Fd".\Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt module.cpp
+         module.cpp
+     1>c:\users\администратор\desktop\tvk02061win2\module.cpp(261): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234): см. объявление "fopen"
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:".\Debug\tvk02061.exe" /INCREMENTAL:NO /NOLOGO odbc32.lib odbccp32.lib setupapi.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:".\Debug\tvk02061.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Администратор\Desktop\tvk02061win2\Debug\tvk02061.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\Debug\tvk02061.lib" /MACHINE:X86 .\Debug\library02061.obj
+         .\Debug\module.obj
+         .\Debug\OpenECE0206byIndex.obj
+         .\Debug\OZUtest.obj
+         .\Debug\SI_test.obj
+         .\Debug\SO_test.obj
+         .\Debug\tvk02061.obj
+     1>library02061.obj : warning LNK4075: не учитывается "/EDITANDCONTINUE" из-за спецификации "/INCREMENTAL:NO"
+         tvk02061.vcxproj -> C:\Users\Администратор\Desktop\tvk02061win2\.\Debug\tvk02061.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:".\Debug\tvk02061.exe;#1" /manifest .\Debug\tvk02061.exe.intermediate.manifest
+       FinalizeBuildStatus:
+         Файл ".\Debug\tvk02061.unsuccessfulbuild" удаляется.
+         Обращение к ".\Debug\tvk02061.lastbuildstate".
+     1>Построение проекта "C:\Users\Администратор\Desktop\tvk02061win2\tvk02061.vcxproj" завершено (целевые объекты build).
+
+Построение успешно завершено.
+
+Затраченное время: 00:00:06.32
