@@ -1,6 +1,13 @@
 ﻿#include "tvk02061.h"
 #include <stdio.h>
 #include <dos.h>
+#include <windows.h>
+
+#define THREADS_NUMBER 10
+#define ITERATIONS_NUMBER 100
+#define PAUSE 10 /* ms */
+
+DWORD dwCounter = 0;
 #pragma pack(1)
 #define myDEBUG		1			// режим отладки
 
@@ -11,7 +18,8 @@ DWORD  timer;					// показания таймера при поступлен
 UCHAR  error;					//ошибка приема параметра
 } INPUTPARAM, *pINPUTPARAM;
 #define myDEBUG		1			// режим отладки
-
+DWORD WINAPI OutputChanelFunction(CONST LPVOID lpParam); 
+DWORD WINAPI InputChanelFunction(CONST LPVOID lpParam);
 extern	HANDLE	hECE0206;
 extern	DWORD nOutput;
 extern	DWORD tick;
@@ -256,17 +264,18 @@ bool operator ==(const InputChanel& left, const OutputChanel& right)
 	return result;
 }
 /*************************************************************************************************/
-void StartProcess()
-{
-	FILE *output=fopen("out.txt","w");	//Файл вывода информации
-	ULONG	param[256];					//Локальный буфер
     InputChanel inputChanel;			//Входной канал
 	OutputChanel outputChanel;			//Выходной канал
-										//Настройка режимов входного и выходного канала 
-	outputChanel.SetOutputChanelMode(255,1,1,0,0,0);
+void iniCH()
+{
+		outputChanel.SetOutputChanelMode(255,1,1,0,0,0);
 	//outputChanel.SetOutputChanelMode(0,1,1,0,0,0); 
 	inputChanel.setInputChanelMode(1,1,1,0);
 	inputChanel.startAllChanel();
+}
+void outCH()
+{
+	ULONG	param[256];					//Локальный буфер
 	for( int i = 0; i<256; i++)			//Записываем информацию в локальный буфер выходного канал
 	{
 		param[i] =i;
@@ -276,9 +285,20 @@ void StartProcess()
 
 	outputChanel.openInputChanel();		//Пуск выходного канала
 	Sleep(1000);
+}
+void inputCH()
+{
+	FILE *output=fopen("out.txt","w");	//Файл вывода информации
+	ULONG	param[256];					//Локальный буфер
+
+	for( int i = 0; i<256; i++)			//Записываем информацию в локальный буфер выходного канал
+	{
+		param[i] =i;
+	}	
+
+	
 	inputChanel.ReadBuffer();			//Чтение буфера входного канала
-		Sleep(1000);
-	inputChanel.ReadBuffer();			//Чтение буфера входного канала
+	Sleep(1000);
 
 	//Вывод информации в файл 
 	fprintf(output,"Процент правильного получения: %f \n\n",outputChanel.Percent(inputChanel));
@@ -287,14 +307,92 @@ void StartProcess()
 		fprintf(output,"in=%d, out=%d, time=%d\n",param[i],inputChanel.bufOutput[i].param,inputChanel.bufOutput[i].timer);
 	}
 	fclose(output);
+}
+DWORD WINAPI ThreadProc(CONST LPVOID lpParam) {
+  CONST HANDLE hMutex = (CONST HANDLE)lpParam;
+  DWORD i;
+  for(i = 0; i < ITERATIONS_NUMBER; i++) {
+    WaitForSingleObject(hMutex, INFINITE);
+    dwCounter++;
+    ReleaseMutex(hMutex);
+    Sleep(PAUSE);
+  }
+  ExitThread(0);
+}
+
+void StartProcess()
+{
+	TCHAR szMessage[256];
+  DWORD dwTemp, i;
+  HANDLE hThreads[THREADS_NUMBER];
+  CONST HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+  CONST HANDLE hMutex = CreateMutex(NULL, FALSE, NULL);
+
+   for(i = 0; i < THREADS_NUMBER; i++) {
+    hThreads[i] = CreateThread(NULL, 0, &ThreadProc, hMutex, 0, NULL);
+
+  }
+
+  HANDLE InputChanel;
+  HANDLE OutputChanel;
+
+  CONST HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+  CONST HANDLE hMutex = CreateMutex(NULL, FALSE, NULL);
+
+
+
+
+	iniCH(); //Инициализация
+	//outCH(); //Запуск выходного канала
+	//inputCH(); //Запуск и прием входного канала
+
+   InputChanel = CreateThread(NULL, 0, &OutputChanelFunction, hMutex, 0, NULL);
+   OutputChanel= CreateThread(NULL, 0, &OutputChanelFunction, hMutex, 0, NULL);
+
+   WaitForSingleObject(InputChanel,INFINITE);
+   WaitForSingleObject(OutputChanel,INFINITE);
+
+
+	/*Остановка и закрытие всех каналов*/
 	inputChanel.StopAllChanel();
 	outputChanel.StopChanel();
 }
-void ProccessOutputChanel()
+DWORD WINAPI OutputChanelFunction(CONST LPVOID lpParam)
 {
+	printf("OpenOutputChanel Thread");
+	ULONG	param[256];					//Локальный буфер
+	for( int i = 0; i<256; i++)			//Записываем информацию в локальный буфер выходного канал
+	{
+		param[i] =i;
+	}								 
+	outputChanel.WriteBuffer(param);
+	DeviceIoControl (hECE0206,ECE02061_XP_SET_SHORT_MODE,NULL,0,NULL,0,&nOutput ,NULL);
 
+	outputChanel.openInputChanel();		//Пуск выходного канала
+	Sleep(1000);
+	ExitThread(0);
 }
-void ProccessInputChanel()
+DWORD WINAPI InputChanelFunction(CONST LPVOID lpParam)
 {
+	printf("OpenInputChanel Thread");
+	FILE *output=fopen("out.txt","w");	//Файл вывода информации
+	ULONG	param[256];					//Локальный буфер
 
+	for( int i = 0; i<256; i++)			//Записываем информацию в локальный буфер выходного канал
+	{
+		param[i] =i;
+	}	
+
+	
+	inputChanel.ReadBuffer();			//Чтение буфера входного канала
+	Sleep(1000);
+
+	//Вывод информации в файл 
+	fprintf(output,"Процент правильного получения: %f \n\n",outputChanel.Percent(inputChanel));
+	for(int i=0; i<256; i++)
+	{
+		fprintf(output,"in=%d, out=%d, time=%d\n",param[i],inputChanel.bufOutput[i].param,inputChanel.bufOutput[i].timer);
+	}
+	fclose(output);
+	ExitThread(0);
 }
